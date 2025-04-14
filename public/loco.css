@@ -1,0 +1,54 @@
+html.has-scroll-smooth {
+    overflow: hidden;
+}
+
+html.has-scroll-dragging {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.has-scroll-smooth body {
+    overflow: hidden;
+}
+
+.has-scroll-smooth [data-scroll-container] {
+    min-height: 100vh;
+}
+
+[data-scroll] {
+    will-change: transform;
+}
+
+[data-scroll-direction="vertical"] {
+    transform: translateY(0);
+}
+
+[data-scroll-direction="horizontal"] {
+    transform: translateX(0);
+}
+
+.swiper {
+    position: relative;
+}
+
+#nav, .theme-toggle {
+    position: fixed;
+    z-index: 1000;
+}
+
+@media (max-width: 768px) {
+    html.has-scroll-smooth {
+        overflow: auto;
+    }
+
+    .has-scroll-smooth body {
+        overflow: auto;
+    }
+
+    .has-scroll-smooth [data-scroll-container] {
+        min-height: auto;
+        height: auto;
+    }
+}

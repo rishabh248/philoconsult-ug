@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - PhiloConsult</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #0a0a23;
+            color: #ffffff;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .query-list {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .query-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+        }
+        .query-item p {
+            margin: 5px 0;
+        }
+        .reply-form {
+            margin-top: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .reply-form textarea {
+            width: 100%;
+            height: 100px;
+            padding: 10px;
+            background: transparent;
+            color: #fff;
+            border: 1px solid #bb86fc;
+            border-radius: 5px;
+        }
+        .reply-form button {
+            padding: 10px;
+            background: #bb86fc;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .reply-form button:hover {
+            background: #6200ea;
+        }
+        .feedback {
+            margin-top: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>Admin Panel - PhiloConsult</h1>
+    <div class="query-list" id="query-list"></div>
+    <div class="feedback" id="admin-feedback"></div>
+
+    <script>
+        async function fetchQueries() {
+            try {
+                const response = await fetch('/queries');
+                const queries = await response.json();
+                const queryList = document.getElementById('query-list');
+                queryList.innerHTML = '';
+
+                queries.forEach(query => {
+                    const queryItem = document.createElement('div');
+                    queryItem.classList.add('query-item');
+                    queryItem.innerHTML = `
+                        <p><strong>Name:</strong> ${query.name}</p>
+                        <p><strong>Email:</strong> ${query.email}</p>
+                        <p><strong>Query:</strong> ${query.query}</p>
+                        <p><strong>Submitted At:</strong> ${new Date(query.submittedAt).toLocaleString()}</p>
+                        <form class="reply-form" onsubmit="replyQuery(event, '${query.email}')">
+                            <textarea placeholder="Write your reply..." required></textarea>
+                            <button type="submit">Send Reply</button>
+                        </form>
+                    `;
+                    queryList.appendChild(queryItem);
+                });
+            } catch (error) {
+                console.error('Error fetching queries:', error);
+                document.getElementById('admin-feedback').textContent = 'Error fetching queries.';
+            }
+        }
+
+        async function replyQuery(event, email) {
+            event.preventDefault();
+            const reply = event.target.querySelector('textarea').value;
+            const feedback = document.getElementById('admin-feedback');
+
+            try {
+                const response = await fetch('/reply-query', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, reply })
+                });
+                const result = await response.json();
+                feedback.textContent = result.message;
+                feedback.style.color = '#bb86fc';
+                event.target.reset();
+            } catch (error) {
+                console.error('Error sending reply:', error);
+                feedback.textContent = 'Error sending reply.';
+                feedback.style.color = '#ff5555';
+            }
+        }
+
+        fetchQueries();
+    </script>
+</body>
+</html>
