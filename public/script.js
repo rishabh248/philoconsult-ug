@@ -179,29 +179,39 @@ if (!isMobile) {
     const cursor = document.querySelector('#minicircle');
     if (cursor) {
         document.addEventListener('mousemove', (e) => {
-            gsap.to(cursor, {
-                x: e.clientX - 6,
-                y: e.clientY - 6,
-                duration: 0.3,
-                ease: 'power2.out'
-            });
+            if (typeof gsap !== "undefined") {
+                gsap.to(cursor, {
+                    x: e.clientX - 6,
+                    y: e.clientY - 6,
+                    duration: 0.3,
+                    ease: 'power2.out'
+                });
+            }
         });
 
         document.querySelectorAll('a, button, .swiper-slide, .submit-btn, .schedule-btn').forEach(elem => {
             elem.addEventListener('mouseenter', () => {
-                gsap.to(cursor, { scale: 1.5, duration: 0.3 });
+                if (typeof gsap !== "undefined") {
+                    gsap.to(cursor, { scale: 1.5, duration: 0.3 });
+                }
             });
             elem.addEventListener('mouseleave', () => {
-                gsap.to(cursor, { scale: 1, duration: 0.3 });
+                if (typeof gsap !== "undefined") {
+                    gsap.to(cursor, { scale: 1, duration: 0.3 });
+                }
             });
         });
 
         document.querySelectorAll('.swiper-slide').forEach(slide => {
             slide.addEventListener('mouseenter', () => {
-                gsap.to(slide, { scale: 1.1, duration: 0.3 });
+                if (typeof gsap !== "undefined") {
+                    gsap.to(slide, { scale: 1.1, duration: 0.3 });
+                }
             });
             slide.addEventListener('mouseleave', () => {
-                gsap.to(slide, { scale: 1, duration: 0.3 });
+                if (typeof gsap !== "undefined") {
+                    gsap.to(slide, { scale: 1, duration: 0.3 });
+                }
             });
         });
     }
@@ -254,7 +264,7 @@ function setupFormSubmission() {
 
             if (category && sanitizedName && email && sanitizedQueryText) {
                 try {
-                    const response = await fetch('http://localhost:3000/api/submit-query', {
+                    const response = await fetch('/api/submit-query', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ name: sanitizedName, email, category, query: sanitizedQueryText })
