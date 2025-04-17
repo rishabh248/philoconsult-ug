@@ -23,7 +23,6 @@ function initLocomotiveScroll() {
             smartphone: { smooth: false },
             tablet: { smooth: false }
         });
-
         locomotiveScroll.on('scroll', () => {
             if (window.swiper) window.swiper.update();
         });
@@ -46,7 +45,7 @@ if (menuToggle && menuOverlay) {
             if (typeof gsap !== "undefined") {
                 gsap.to(menuOverlay, { y: "0%", duration: 0.5, ease: "expo.out" });
             } else {
-                console.error("GSAP not loaded, falling back to CSS");
+                console.warn("GSAP not loaded, falling back to CSS");
                 menuOverlay.style.transform = "translateY(0)";
             }
             document.body.classList.add("menu-open");
@@ -152,7 +151,7 @@ function setupMenuLinks() {
     });
 }
 
-// GSAP Animations (excluding menu links)
+// GSAP Animations
 function setupGSAPAnimations() {
     try {
         gsap.from(".boundingelem", { opacity: 0, y: 50, duration: 0.8, stagger: 0.2 });
@@ -247,42 +246,64 @@ function setupSwiper() {
     }
 }
 
+// Form Submission
 function setupFormSubmission() {
     const queryForm = document.getElementById('query-form');
     const formFeedback = document.getElementById('form-feedback');
     
-    if (queryForm) {
-        queryForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const category = document.getElementById('category').value;
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            const queryText = document.getElementById('query-text').value;
-
-            const sanitizedQueryText = queryText.replace(/[<>{}]/g, '');
-            const sanitizedName = name.replace(/[<>{}]/g, '');
-
-            if (category && sanitizedName && email && sanitizedQueryText) {
-                try {
-                    const response = await fetch('/api/submit-query', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ name: sanitizedName, email, category, query: sanitizedQueryText })
-                    });
-
-                    const result = await response.json();
-                    formFeedback.textContent = result.message;
-                    formFeedback.style.color = response.ok ? '#bb86fc' : '#ff5555';
-                    if (response.ok) queryForm.reset();
-                } catch (error) {
-                    console.error('Form submission error:', error);
-                    formFeedback.textContent = 'Error submitting query. Please try again.';
-                    formFeedback.style.color = '#ff5555';
-                }
-            } else {
-                formFeedback.textContent = 'Please fill out all fields.';
-                formFeedback.style.color = '#ff5555';
-            }
-        });
+    if (!queryForm) {
+        console.error("Query form not found in DOM. Check HTML ID 'query-form'.");
+        return;
     }
+
+    if (!formFeedback) {
+        console.error("Form feedback element not found. Check HTML ID 'form-feedback'.");
+        return;
+    }
+
+    queryForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const category = document.getElementById('category')?.value;
+        const name = document.getElementById('name')?.value;
+        const email = document.getElementById('email')?.value;
+        const queryText = document.getElementById('query-text')?.value;
+
+        if (!category || !name || !email || !queryText) {
+            console.warn("Form fields missing:", { category, name, email, queryText });
+            formFeedback.textContent = 'Please fill out all fields.';
+            formFeedback.style.color = '#ff5555';
+            return;
+        }
+
+        const sanitizedQueryText = queryText.replace(/[<>{}]/g, '');
+        const sanitizedName = name.replace(/[<>{}]/g, '');
+
+        try {
+            console.log("Sending request to /api/submit-query", {
+                name: sanitizedName,
+                email,
+                category,
+                query: sanitizedQueryText
+            });
+            const response = await fetch('https://philoconsult-ug.onrender.com/api/submit-query', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    name: sanitizedName,
+                    email,
+                    category,
+                    query: sanitizedQueryText
+                })
+            });
+            console.log("Response received:", response.status, response.statusText);
+            const result = await response.json();
+            formFeedback.textContent = result.message;
+            formFeedback.style.color = response.ok ? '#bb86fc' : '#ff5555';
+            if (response.ok) queryForm.reset();
+        } catch (error) {
+            console.error('Form submission error:', error);
+            formFeedback.textContent = 'Error submitting query. Server might be down or unreachable.';
+            formFeedback.style.color = '#ff5555';
+        }
+    });
 }
