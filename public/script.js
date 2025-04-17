@@ -43,13 +43,22 @@ if (menuToggle && menuOverlay) {
     menuToggle.addEventListener("click", () => {
         if (!menuOpen) {
             menuOverlay.classList.add("active");
-            gsap.to(menuOverlay, { y: "0%", duration: 0.5, ease: "expo.out" });
+            if (typeof gsap !== "undefined") {
+                gsap.to(menuOverlay, { y: "0%", duration: 0.5, ease: "expo.out" });
+            } else {
+                console.error("GSAP not loaded, falling back to CSS");
+                menuOverlay.style.transform = "translateY(0)";
+            }
             document.body.classList.add("menu-open");
             if (locomotiveScroll) locomotiveScroll.stop();
             document.body.style.overflow = 'hidden';
         } else {
             menuOverlay.classList.remove("active");
-            gsap.to(menuOverlay, { y: "-100%", duration: 0.5, ease: "expo.out" });
+            if (typeof gsap !== "undefined") {
+                gsap.to(menuOverlay, { y: "-100%", duration: 0.5, ease: "expo.out" });
+            } else {
+                menuOverlay.style.transform = "translateY(-100%)";
+            }
             document.body.classList.remove("menu-open");
             if (locomotiveScroll) locomotiveScroll.start();
             document.body.style.overflow = '';
@@ -61,7 +70,11 @@ if (menuToggle && menuOverlay) {
 if (closeMenu && menuOverlay) {
     closeMenu.addEventListener("click", () => {
         menuOverlay.classList.remove("active");
-        gsap.to(menuOverlay, { y: "-100%", duration: 0.5, ease: "expo.out" });
+        if (typeof gsap !== "undefined") {
+            gsap.to(menuOverlay, { y: "-100%", duration: 0.5, ease: "expo.out" });
+        } else {
+            menuOverlay.style.transform = "translateY(-100%)";
+        }
         document.body.classList.remove("menu-open");
         if (locomotiveScroll) locomotiveScroll.start();
         document.body.style.overflow = '';
@@ -86,7 +99,11 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && menuOverlay.classList.contains('active')) {
             menuOverlay.classList.remove('active');
-            gsap.to(menuOverlay, { y: "-100%", duration: 0.5, ease: "expo.out" });
+            if (typeof gsap !== "undefined") {
+                gsap.to(menuOverlay, { y: "-100%", duration: 0.5, ease: "expo.out" });
+            } else {
+                menuOverlay.style.transform = "translateY(-100%)";
+            }
             document.body.classList.remove("menu-open");
             if (locomotiveScroll) locomotiveScroll.start();
             document.body.style.overflow = '';
@@ -109,7 +126,11 @@ function setupMenuLinks() {
             const targetSection = document.getElementById(targetId);
             if (targetSection) {
                 menuOverlay.classList.remove("active");
-                gsap.to(menuOverlay, { y: "-100%", duration: 0.5, ease: "expo.out" });
+                if (typeof gsap !== "undefined") {
+                    gsap.to(menuOverlay, { y: "-100%", duration: 0.5, ease: "expo.out" });
+                } else {
+                    menuOverlay.style.transform = "translateY(-100%)";
+                }
                 document.body.classList.remove("menu-open");
                 if (locomotiveScroll) locomotiveScroll.start();
                 document.body.style.overflow = '';

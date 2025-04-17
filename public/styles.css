@@ -21,6 +21,12 @@ body.light-mode {
     color: #333;
 }
 
+/* Hide background content when menu is open */
+body.menu-open [data-scroll-container] {
+    opacity: 0;
+    pointer-events: none;
+}
+
 .theme-toggle {
     position: fixed;
     top: 20px;
@@ -106,11 +112,12 @@ body.light-mode {
     height: 100%;
     background-color: rgba(0, 0, 0, 0.9);
     display: flex;
-    justify-content: center;
-    align-items: center;
+    justify-content: flex-start; /* Align to top-left like Raju */
+    align-items: flex-start; /* Align to top-left like Raju */
+    padding: 50px; /* Add padding like Raju */
     z-index: 999;
     transform: translateY(-100%);
-    transition: transform 0.3s ease;
+    /* Removed transition since GSAP handles the animation */
 }
 
 #menu-overlay.active {
@@ -136,7 +143,8 @@ body.light-mode {
     display: flex;
     flex-direction: column;
     gap: 20px;
-    text-align: center;
+    text-align: left; /* Align links to the left like Raju */
+    margin-top: 80px; /* Add spacing from the top like Raju */
 }
 
 .menu-links a {
