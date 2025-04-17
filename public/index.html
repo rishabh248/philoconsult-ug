@@ -4,26 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PhiloConsult - UniGuide</title>
-    <link rel="stylesheet" href="/styles.css">
-    <link rel="stylesheet" href="/loco.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="loco.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+
 </head>
 <body>
+    <div class="glowing-particles"></div>
+
     <div id="minicircle" aria-hidden="true"></div>
     <div id="nav">
-        <a href="/" class="logo">
-            <img src="logo.png" alt="PhiloConsult Logo" style="height: 40px;">
-            <span class="tagline">Philosophy in Practice, Consulting for Progress</span>
+        <a href="#" class="logo">
+            <img src="logo.png" alt="Logo">
+            <span class="tagline">PhiloConsulT-UG</span>
         </a>
-        <button id="menu-toggle">☰</button>
+        <button id="menu-toggle" aria-label="Open menu">☰</button>
     </div>
     <div id="menu-overlay">
-        <button id="close-menu">×</button>
+        <button id="close-menu" aria-label="Close menu">×</button>
         <div class="menu-links">
-            <a href="#one" data-scroll-to>Life Queries</a>
-            <a href="#sec" data-scroll-to>Academic Queries</a>
-            <a href="#thir" data-scroll-to>College Info</a>
-            <a href="#for" data-scroll-to>Career Guidance</a>
+            <a href="#query" data-scroll-to>Premium Service</a>
             <a href="#query" data-scroll-to>Submit Query</a>
             <a href="#faq" data-scroll-to>FAQ</a>
             <a href="#live" data-scroll-to>Live Sessions</a>
@@ -31,13 +33,13 @@
         </div>
     </div>
     <div class="theme-toggle">
-        <button id="theme-toggle-btn">🌙</button>
+        <button id="theme-toggle-btn" aria-label="Toggle theme">🌙</button>
     </div>
     <div data-scroll-container>
         <section id="hero">
             <div id="heading">
                 <div class="bounding">
-                    <h1 class="boundingelem">PhiloConsult</h1>
+                    <h1 class="boundingelem">IIITDM</h1>
                 </div>
                 <div class="blocktext">
                     <div class="bounding">
@@ -54,32 +56,32 @@
                 </div>
             </div>
             <div id="herofooter">
-                <a href="#hero2" data-scroll-to>Explore Services ↓</a>
+                <a href="#hero2" data-scroll-to>Genuine Answers <i class="ri-arrow-right-up-line"></i></a>
+                <a href="#live" data-scroll-to>Live Now <i class="ri-arrow-right-up-line"></i></a>
                 <div id="iconset">
-                    <a href="https://twitter.com" target="_blank" class="circle"><img src="/assets/twitter.png" alt="Twitter"></a>
-                    <a href="https://linkedin.com" target="_blank" class="circle"><img src="/assets/linkedin.png" alt="LinkedIn"></a>
-                    <a href="https://instagram.com" target="_blank" class="circle"><img src="/assets/instagram.png" alt="Instagram"></a>
+                    <div class="circle"><i class="ri-arrow-down-line"></i></div>
+                    <div class="circle"><i class="ri-arrow-down-line"></i></div>
                 </div>
             </div>
         </section>
         <section id="hero2">
             <h1 id="zero">How Can We Help You?</h1>
             <div class="help-options">
-                <div id="one">
+                <div id="life">
                     <h2>Life Queries</h2>
                     <p>Personal guidance for life's challenges.</p>
                 </div>
-                <div id="sec">
+                <div id="academic">
                     <h2>Academic Queries</h2>
                     <p>Support for your academic journey.</p>
                 </div>
-                <div id="thir">
+                <div id="college">
                     <h2>College Info</h2>
                     <p>Insights on colleges and admissions.</p>
                 </div>
-                <div id="for">
+                <div id="career">
                     <h2>Career Guidance</h2>
-                    <p>Plan your career with expert advice.</p>
+                    <p>Plan your career with required advice.</p>
                 </div>
             </div>
         </section>
@@ -90,6 +92,7 @@
                     <label for="category">Category</label>
                     <select id="category" name="category" required>
                         <option value="">Select a category</option>
+                        <option value="life">PREMIUM CHAT SERVICES</option>
                         <option value="life">Life Queries</option>
                         <option value="academic">Academic Queries</option>
                         <option value="college">College Info</option>
@@ -122,16 +125,49 @@
                     </div>
                     <div class="swiper-slide">
                         <h3 class="faq-title">How can I submit a query?</h3>
-                        <p class="faq-item">Use the "Submit Query" form on our website to send us your questions.</p>
+                        <p class="faq-item">Use the "Submit Query" form on our website.</p>
                     </div>
                     <div class="swiper-slide">
-                        <h3 class="faq-title">Is there a fee for consultations?</h3>
+                        <h3 class="faq-title">Is there a fee?</h3>
                         <p class="faq-item">Basic consultations are free; advanced sessions may have a fee.</p>
                     </div>
                     <div class="swiper-slide">
-                        <h3 class="faq-title">How long does it take to get a response?</h3>
-                        <p class="faq-item">We aim to respond within 24-48 hours.</p>
+                        <h3 class="faq-title">Response time?</h3>
+                        <p class="faq-item">We respond within 24-48 hours.</p>
                     </div>
+                    <div class="swiper-slide">
+                        <h3 class="faq-title">🏫 Admissions & Academics</h3>
+                        <p class="faq-item">❓ Is IIITDM Jabalpur under JoSAA or CSAB?<br>➡ Yes, admission is via JoSAA and CSAB.</p>
+                        <p class="faq-item">❓ What is the required JEE Mains percentile?<br>➡ Varies yearly. Check JoSAA cutoffs.</p>
+                      </div>
+                  
+                      
+                      <div class="swiper-slide">
+                        <h3 class="faq-title">📖 Academic Options</h3>
+                        <p class="faq-item">❓ Is there a branch change option in 2nd year?<br>➡ Yes, based on CGPA and seat availability.</p>
+                        <p class="faq-item">❓ How is the faculty quality at IIITDMJ?<br>➡ Mostly good, varies by department.</p>
+                      </div>
+                  
+                      
+                      <div class="swiper-slide">
+                        <h3 class="faq-title">🏠 Campus Life & Facilities</h3>
+                        <p class="faq-item">❓ How is hostel life at IIITDMJ?<br>➡ First-years get hostels, seniors have single/double rooms.</p>
+                        <p class="faq-item">❓ Does IIITDMJ have a swimming pool?<br>➡ No, but gyms & sports courts are available.</p>
+                      </div>
+                  
+                      
+                      <div class="swiper-slide">
+                        <h3 class="faq-title">💼 Placements & Career</h3>
+                        <p class="faq-item">❓ What is the highest package at IIITDMJ?<br>➡ Varies yearly, check placement reports.</p>
+                        <p class="faq-item">❓ Do companies hire from non-CSE branches?<br>➡ Yes, but coding knowledge helps.</p>
+                      </div>
+                  
+                     
+                      <div class="swiper-slide">
+                        <h3 class="faq-title">🎉 Fests & Clubs</h3>
+                        <p class="faq-item">❓ Which are the biggest fests in IIITDMJ?<br>➡ Taarangana, Abhikalpan, and Gusto.</p>
+                        <p class="faq-item">❓ Are there hackathons or tech events?<br>➡ Yes, frequent coding contests & tech fests.</p>
+                      </div>
                 </div>
                 <div class="swiper-button-prev"></div>
                 <div class="swiper-button-next"></div>
@@ -141,42 +177,54 @@
         <section id="live" class="live-section">
             <h2>Live Sessions</h2>
             <div class="live-content">
-                <p>Join our live sessions to interact with experts and get real-time guidance.</p>
+                <p>Join our live sessions for real-time guidance.</p>
             </div>
             <div class="live-schedule">
                 <div class="schedule-card">
                     <h3>Academic Guidance</h3>
                     <p>Every Saturday at 5:00 PM</p>
-                    <button class="schedule-btn">Join Now</button>
+                    <a href="https://zoom.us/join" target="_blank" class="schedule-btn">Join Now</a>
                 </div>
                 <div class="schedule-card">
                     <h3>Career Planning</h3>
                     <p>Every Sunday at 3:00 PM</p>
-                    <button class="schedule-btn">Join Now</button>
+                    <a href="https://zoom.us/join" target="_blank" class="schedule-btn">Join Now</a>
                 </div>
             </div>
         </section>
         <section id="about" class="about-section">
             <h2>About Us</h2>
-            <p>We are a team of dedicated consultants helping students and individuals navigate their academic and personal challenges with practical, philosophical insights.</p>
+            <p>We are dedicated consultants helping students and individuals navigate academic and personal challenges.</p>
         </section>
         <footer>
-            <div class="footer-links">
-                <a href="#hero2" data-scroll-to>Services</a>
-                <a href="#query" data-scroll-to>Contact</a>
-                <a href="#faq" data-scroll-to>FAQ</a>
-                <a href="#about" data-scroll-to>About</a>
+            <div id="mainfooter">
+                <a href="#hero2" data-scroll-to>Genuine Answers <i class="ri-arrow-right-up-line"></i></a>
+                <a href="#live" data-scroll-to>Live Now <i class="ri-arrow-right-up-line"></i></a>
+                <div id="iconset">
+                    <div class="circle"><i class="ri-arrow-down-line"></i></div>
+                    <div class="circle"><i class="ri-arrow-down-line"></i></div>
+                </div>
             </div>
             <div class="social-icons">
-                <a href="https://twitter.com" target="_blank" class="social-link"><img src="twitter.png"Twitter"></a>
-                <a href="https://linkedin.com" target="_blank" class="social-link"><img src="linkedin.png" alt="LinkedIn"></a>
-                <a href="https://instagram.com" target="_blank" class="social-link"><img src="instagram.png" alt="Instagram"></a>
+                <a href="https://twitter.com" target="_blank" class="social-link">
+                    <img src="twitter.png" alt="Twitter">
+                </a>
+                <a href="https://linkedin.com" target="_blank" class="social-link">
+                    <img src="linkedin.png" alt="LinkedIn">
+                </a>
+                <a href="https://instagram.com" target="_blank" class="social-link">
+                    <img src="instagram.png" alt="Instagram">
+                </a>
             </div>
         </footer>
     </div>
+   
+
     <script src="https://cdn.jsdelivr.net/npm/locomotive-scroll@4.1.4/dist/locomotive-scroll.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-    <script src="/script.js"></script>
+    <script src="script.js"></script>
+    
+     
 </body>
 </html>

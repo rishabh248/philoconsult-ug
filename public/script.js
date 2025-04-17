@@ -1,5 +1,7 @@
+// Detect mobile devices
 const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
+// Theme Toggle
 const themeToggleBtn = document.getElementById('theme-toggle-btn');
 if (themeToggleBtn) {
     themeToggleBtn.addEventListener('click', () => {
@@ -9,55 +11,65 @@ if (themeToggleBtn) {
     });
 }
 
+// Initialize Locomotive Scroll
 let locomotiveScroll;
 function initLocomotiveScroll() {
     try {
-        if (!isMobile) {
-            locomotiveScroll = new LocomotiveScroll({
-                el: document.querySelector('[data-scroll-container]'),
-                smooth: true,
-                multiplier: 1,
-                lerp: 0.1,
-                smartphone: {
-                    smooth: false
-                },
-                tablet: {
-                    smooth: false
-                }
-            });
+        locomotiveScroll = new LocomotiveScroll({
+            el: document.querySelector('[data-scroll-container]'),
+            smooth: true,
+            multiplier: 1,
+            lerp: 0.1,
+            smartphone: { smooth: false },
+            tablet: { smooth: false }
+        });
 
-            locomotiveScroll.on('scroll', () => {
-                if (window.swiper) {
-                    window.swiper.update();
-                }
-            });
-        } else {
-            document.querySelectorAll('[data-scroll-to]').forEach(link => {
-                link.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const targetId = link.getAttribute('href').substring(1);
-                    const targetSection = document.getElementById(targetId);
-                    if (targetSection) {
-                        targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }
-                });
-            });
-        }
+        locomotiveScroll.on('scroll', () => {
+            if (window.swiper) window.swiper.update();
+        });
     } catch (error) {
         console.error('Locomotive Scroll initialization failed:', error);
-        document.querySelectorAll('[data-scroll-to]').forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                const targetId = link.getAttribute('href').substring(1);
-                const targetSection = document.getElementById(targetId);
-                if (targetSection) {
-                    targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            });
-        });
+        document.querySelector('[data-scroll-container]').style.overflow = 'auto';
     }
 }
 
+// Menu Toggle Functionality
+const menuToggle = document.getElementById("menu-toggle");
+const menuOverlay = document.getElementById("menu-overlay");
+const closeMenu = document.getElementById("close-menu");
+let menuOpen = false;
+
+if (menuToggle && menuOverlay) {
+    menuToggle.addEventListener("click", () => {
+        if (!menuOpen) {
+            menuOverlay.classList.add("active");
+            gsap.to(menuOverlay, { y: "0%", duration: 0.5, ease: "expo.out" });
+            document.body.classList.add("menu-open");
+            if (locomotiveScroll) locomotiveScroll.stop();
+            document.body.style.overflow = 'hidden';
+        } else {
+            menuOverlay.classList.remove("active");
+            gsap.to(menuOverlay, { y: "-100%", duration: 0.5, ease: "expo.out" });
+            document.body.classList.remove("menu-open");
+            if (locomotiveScroll) locomotiveScroll.start();
+            document.body.style.overflow = '';
+        }
+        menuOpen = !menuOpen;
+    });
+}
+
+if (closeMenu && menuOverlay) {
+    closeMenu.addEventListener("click", () => {
+        menuOverlay.classList.remove("active");
+        gsap.to(menuOverlay, { y: "-100%", duration: 0.5, ease: "expo.out" });
+        document.body.classList.remove("menu-open");
+        if (locomotiveScroll) locomotiveScroll.start();
+        document.body.style.overflow = '';
+        menuOpen = false;
+    });
+}
+
+// Setup on DOM Content Loaded
 document.addEventListener('DOMContentLoaded', () => {
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'light') {
@@ -70,85 +82,38 @@ document.addEventListener('DOMContentLoaded', () => {
     setupGSAPAnimations();
     setupSwiper();
     setupFormSubmission();
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && menuOverlay.classList.contains('active')) {
+            menuOverlay.classList.remove('active');
+            gsap.to(menuOverlay, { y: "-100%", duration: 0.5, ease: "expo.out" });
+            document.body.classList.remove("menu-open");
+            if (locomotiveScroll) locomotiveScroll.start();
+            document.body.style.overflow = '';
+            menuOpen = false;
+        }
+    });
 });
 
-const menuToggle = document.getElementById("menu-toggle");
-const menuOverlay = document.getElementById("menu-overlay");
-const closeMenu = document.getElementById("close-menu");
-
-if (menuToggle) {
-    menuToggle.addEventListener("click", () => {
-        menuOverlay.classList.add("active");
-    });
-}
-
-if (closeMenu) {
-    closeMenu.addEventListener("click", () => {
-        menuOverlay.classList.remove("active");
-    });
-}
-
+// Setup Menu Links for Smooth Scrolling
 function setupMenuLinks() {
     const menuLinks = document.querySelectorAll('.menu-links a[data-scroll-to]');
     const footerLinks = document.querySelectorAll('.footer-links a[data-scroll-to]');
     const heroFooterLinks = document.querySelectorAll('#herofooter a[data-scroll-to]');
 
-    menuLinks.forEach(link => {
+    const allLinks = [...menuLinks, ...footerLinks, ...heroFooterLinks];
+    allLinks.forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
             const targetId = link.getAttribute('href').substring(1);
             const targetSection = document.getElementById(targetId);
-            
             if (targetSection) {
                 menuOverlay.classList.remove("active");
-                setTimeout(() => {
-                    if (!isMobile && locomotiveScroll) {
-                        locomotiveScroll.scrollTo(targetSection, {
-                            offset: -50,
-                            duration: 1000,
-                            easing: [0.25, 0.00, 0.35, 1.00]
-                        });
-                    } else {
-                        window.scrollTo({
-                            top: targetSection.offsetTop - 50,
-                            behavior: 'smooth'
-                        });
-                    }
-                }, 300);
-            } else {
-                console.error(`Target section with ID "${targetId}" not found.`);
-            }
-        });
-    });
-
-    footerLinks.forEach(link => {
-        link.addEventListener('click', (e) => {
-            e.preventDefault();
-            const targetId = link.getAttribute('href').substring(1);
-            const targetSection = document.getElementById(targetId);
-            if (targetSection) {
-                if (!isMobile && locomotiveScroll) {
-                    locomotiveScroll.scrollTo(targetSection, {
-                        offset: -50,
-                        duration: 1000,
-                        easing: [0.25, 0.00, 0.35, 1.00]
-                    });
-                } else {
-                    window.scrollTo({
-                        top: targetSection.offsetTop - 50,
-                        behavior: 'smooth'
-                    });
-                }
-            }
-        });
-    });
-
-    heroFooterLinks.forEach(link => {
-        link.addEventListener('click', (e) => {
-            e.preventDefault();
-            const targetId = link.getAttribute('href').substring(1);
-            const targetSection = document.getElementById(targetId);
-            if (targetSection) {
+                gsap.to(menuOverlay, { y: "-100%", duration: 0.5, ease: "expo.out" });
+                document.body.classList.remove("menu-open");
+                if (locomotiveScroll) locomotiveScroll.start();
+                document.body.style.overflow = '';
+                menuOpen = false;
                 if (!isMobile && locomotiveScroll) {
                     locomotiveScroll.scrollTo(targetSection, {
                         offset: -50,
@@ -166,12 +131,13 @@ function setupMenuLinks() {
     });
 }
 
+// GSAP Animations (excluding menu links)
 function setupGSAPAnimations() {
     try {
         gsap.from(".boundingelem", { opacity: 0, y: 50, duration: 0.8, stagger: 0.2 });
         gsap.from(".boundingelem1", { opacity: 0, y: 50, duration: 0.8, delay: 0.5 });
         gsap.from("#zero", { opacity: 0, y: 30, duration: 0.8 });
-        gsap.from("#one h2, #sec h2, #thir h2, #for h2", { opacity: 0, y: 30, duration: 0.8, stagger: 0.2 });
+        gsap.from("#life h2, #academic h2, #college h2, #career h2", { opacity: 0, y: 30, duration: 0.8, stagger: 0.2 });
         gsap.from("#query h2", { opacity: 0, y: 30, duration: 0.8 });
         gsap.from(".query-form", { opacity: 0, y: 30, duration: 0.8, delay: 0.3 });
         gsap.from(".faq-section h2", { opacity: 0, y: 30, duration: 0.8 });
@@ -182,21 +148,12 @@ function setupGSAPAnimations() {
         gsap.from(".about-section h2", { opacity: 0, y: 30, duration: 0.8 });
         gsap.from(".about-section p", { opacity: 0, y: 30, duration: 0.8, delay: 0.3 });
         gsap.from(".social-link", { y: -10, duration: 1, repeat: -1, yoyo: true, stagger: 0.2, ease: 'power1.inOut' });
-
-        if (!isMobile && locomotiveScroll) {
-            locomotiveScroll.on('scroll', (args) => {
-                // Add scroll-triggered animations if needed
-            });
-        }
     } catch (error) {
         console.error('GSAP animation failed:', error);
-        document.querySelectorAll('.boundingelem, .boundingelem1, #zero, #one h2, #sec h2, #thir h2, #for h2, #query h2, .query-form, .faq-section h2, .swiper-slide, .live-section h2, .live-content p, .schedule-card, .about-section h2, .about-section p').forEach(elem => {
-            elem.style.opacity = '1';
-            elem.style.transform = 'translateY(0)';
-        });
     }
 }
 
+// Custom Cursor (Mini Circle)
 if (!isMobile) {
     const cursor = document.querySelector('#minicircle');
     if (cursor) {
@@ -229,6 +186,7 @@ if (!isMobile) {
     }
 }
 
+// Swiper Setup
 function setupSwiper() {
     try {
         window.swiper = new Swiper(".swiper", {
@@ -253,12 +211,6 @@ function setupSwiper() {
                 },
             }
         });
-
-        if (!isMobile && locomotiveScroll) {
-            locomotiveScroll.on('call', () => {
-                window.swiper.update();
-            });
-        }
     } catch (error) {
         console.error('Swiper initialization failed:', error);
     }
@@ -281,16 +233,18 @@ function setupFormSubmission() {
 
             if (category && sanitizedName && email && sanitizedQueryText) {
                 try {
-                    const response = await fetch('http://localhost:10001/submit-query', {
+                    const response = await fetch('http://localhost:3000/api/submit-query', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ name: sanitizedName, email, query: sanitizedQueryText })
+                        body: JSON.stringify({ name: sanitizedName, email, category, query: sanitizedQueryText })
                     });
+
                     const result = await response.json();
                     formFeedback.textContent = result.message;
-                    formFeedback.style.color = '#bb86fc';
-                    queryForm.reset();
+                    formFeedback.style.color = response.ok ? '#bb86fc' : '#ff5555';
+                    if (response.ok) queryForm.reset();
                 } catch (error) {
+                    console.error('Form submission error:', error);
                     formFeedback.textContent = 'Error submitting query. Please try again.';
                     formFeedback.style.color = '#ff5555';
                 }
