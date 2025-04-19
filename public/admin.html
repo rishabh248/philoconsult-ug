@@ -3,119 +3,130 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel - PhiloConsult</title>
+    <title>PhiloConsult Admin Panel</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background: #0a0a23;
-            color: #ffffff;
+            background-color: #121212; /* Black Theme */
+            color: white;
+            text-align: center;
+            margin: 0;
             padding: 20px;
         }
-        h1 {
-            text-align: center;
+        h2 {
+            color: #ffffff;
         }
-        .query-list {
+        .container {
             max-width: 800px;
-            margin: 0 auto;
+            margin: auto;
+            background: #1e1e1e; /* Dark Grey */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.1);
         }
-        .query-item {
-            background: rgba(255, 255, 255, 0.1);
+        .query-card {
+            background: #252525;
+            color: white;
             padding: 15px;
-            margin-bottom: 15px;
-            border-radius: 5px;
+            margin: 15px 0;
+            border-radius: 8px;
+            box-shadow: 0px 0px 5px rgba(255, 255, 255, 0.1);
+            text-align: left;
         }
-        .query-item p {
-            margin: 5px 0;
-        }
-        .reply-form {
-            margin-top: 10px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        .reply-form textarea {
+        textarea {
             width: 100%;
-            height: 100px;
-            padding: 10px;
-            background: transparent;
-            color: #fff;
-            border: 1px solid #bb86fc;
-            border-radius: 5px;
-        }
-        .reply-form button {
-            padding: 10px;
-            background: #bb86fc;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .reply-form button:hover {
-            background: #6200ea;
-        }
-        .feedback {
+            height: 60px;
             margin-top: 10px;
-            text-align: center;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #333;
+            background: #1e1e1e;
+            color: white;
+            resize: none;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            margin-top: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        button:hover {
+            background-color: #0056b3;
         }
     </style>
-</head>
-<body>
-    <h1>Admin Panel - PhiloConsult</h1>
-    <div class="query-list" id="query-list"></div>
-    <div class="feedback" id="admin-feedback"></div>
-
     <script>
+        let autoRefresh;
+        
         async function fetchQueries() {
             try {
-                const response = await fetch('/queries');
-                const queries = await response.json();
-                const queryList = document.getElementById('query-list');
-                queryList.innerHTML = '';
+                let response = await fetch('https://philoconsult.onrender.com/get-queries', { cache: "no-store" });
+                let queries = await response.json();
+                let queryList = document.getElementById("queryList");
+                queryList.innerHTML = "";
 
-                queries.forEach(query => {
-                    const queryItem = document.createElement('div');
-                    queryItem.classList.add('query-item');
-                    queryItem.innerHTML = `
-                        <p><strong>Name:</strong> ${query.name}</p>
-                        <p><strong>Email:</strong> ${query.email}</p>
-                        <p><strong>Query:</strong> ${query.query}</p>
-                        <p><strong>Submitted At:</strong> ${new Date(query.submittedAt).toLocaleString()}</p>
-                        <form class="reply-form" onsubmit="replyQuery(event, '${query.email}')">
-                            <textarea placeholder="Write your reply..." required></textarea>
-                            <button type="submit">Send Reply</button>
-                        </form>
-                    `;
-                    queryList.appendChild(queryItem);
+                if (queries.length === 0) {
+                    queryList.innerHTML = "<p>No queries found.</p>";
+                    return;
+                }
+
+                queries.forEach(q => {
+                    queryList.innerHTML += `
+                        <div class="query-card">
+                            <b>${q.name}</b> (${q.email}) <br>
+                            <i>${q.query}</i> <br>
+                            <textarea id="reply-${q._id}" placeholder="Type your reply here..." onfocus="stopAutoRefresh()" onblur="startAutoRefresh()"></textarea>
+                            <button onclick="replyEmail('${q.email}', '${q.query}', '${q._id}')">Send Reply</button>
+                        </div>`;
                 });
             } catch (error) {
-                console.error('Error fetching queries:', error);
-                document.getElementById('admin-feedback').textContent = 'Error fetching queries.';
+                console.error("Error fetching queries:", error);
+                document.getElementById("queryList").innerHTML = "<p>Error loading queries. Check console.</p>";
             }
         }
 
-        async function replyQuery(event, email) {
-            event.preventDefault();
-            const reply = event.target.querySelector('textarea').value;
-            const feedback = document.getElementById('admin-feedback');
+        async function replyEmail(email, query, id) {
+            let reply = document.getElementById(`reply-${id}`).value;
+            if (!reply.trim()) {
+                alert("Reply cannot be empty!");
+                return;
+            }
 
-            try {
-                const response = await fetch('/reply-query', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, reply })
-                });
-                const result = await response.json();
-                feedback.textContent = result.message;
-                feedback.style.color = '#bb86fc';
-                event.target.reset();
-            } catch (error) {
-                console.error('Error sending reply:', error);
-                feedback.textContent = 'Error sending reply.';
-                feedback.style.color = '#ff5555';
+            let response = await fetch('https://philoconsult.onrender.com/send-reply', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, query, reply })
+            });
+
+            if (response.ok) {
+                alert("Reply Sent!");
+                fetchQueries();
+            } else {
+                alert("Error sending reply.");
             }
         }
 
-        fetchQueries();
+        function startAutoRefresh() {
+            autoRefresh = setInterval(fetchQueries, 5000);
+        }
+        
+        function stopAutoRefresh() {
+            clearInterval(autoRefresh);
+        }
+        
+        window.onload = function() {
+            fetchQueries();
+            startAutoRefresh();
+        };
     </script>
+</head>
+<body>
+    <h2>PhiloConsult Admin Panel</h2>
+    <div class="container">
+        <div id="queryList"></div>
+    </div>
 </body>
 </html>

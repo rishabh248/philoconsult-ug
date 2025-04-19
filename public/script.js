@@ -307,3 +307,8 @@ function setupFormSubmission() {
         }
     });
 }
+document.addEventListener('DOMContentLoaded', () => {
+    
+    setupFormSubmission();
+  }
+);
